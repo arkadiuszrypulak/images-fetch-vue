@@ -1,5 +1,5 @@
 const { defineConfig } = require("@vue/cli-service");
 module.exports = defineConfig({
-  base: "/fetch-images/",
+  publicPath: process.env.NODE_ENV === "production" ? "/fetch-images/" : "/",
   transpileDependencies: true,
 });
