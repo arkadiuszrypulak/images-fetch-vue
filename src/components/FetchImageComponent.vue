@@ -1,9 +1,19 @@
 <template>
-  <div class="gallery">
-    <div class="image-container" v-for="image in images" :key="image.id">
-      <div class="container-content">
-        <img :src="image.download_url" :alt="image.author" class="image" />
-        <div class="author">{{ image.author }}</div>
+  <div>
+    <v-progress-circular
+      v-if="isLoading"
+      indeterminate
+      color="primary"
+      size="64"
+    ></v-progress-circular>
+
+    <h1>Gallery</h1>
+    <div class="gallery" v-if="!isLoading">
+      <div class="image-container" v-for="image in images" :key="image.id">
+        <div class="container-content">
+          <img :src="image.download_url" :alt="image.author" class="image" />
+          <div class="author">{{ image.author }}</div>
+        </div>
       </div>
     </div>
   </div>
@@ -15,13 +25,19 @@ import axios from "axios";
 export default {
   data() {
     return {
+      isLoading: true,
       images: [],
     };
   },
   mounted() {
     this.fetchImages();
+    this.setPageTitle("Fetch images");
   },
   methods: {
+    setPageTitle(title) {
+      document.title = title;
+    },
+
     fetchImages() {
       const apiUrl = "https://picsum.photos/v2/list?page=1&limit=20";
 
@@ -34,6 +50,9 @@ export default {
         })
         .catch((error) => {
           console.error(error);
+        })
+        .finally(() => {
+          this.isLoading = false;
         });
     },
   },
@@ -48,7 +67,7 @@ export default {
 }
 
 .image-container {
-  width: calc(50% - 20px);
+  width: 100%;
   margin: 10px;
   display: flex;
   justify-content: center;
@@ -62,7 +81,7 @@ export default {
 
 .image {
   width: 100%;
-  max-width: 300px;
+  max-width: 500px;
   border-radius: 6px;
   transition: 0.3s ease-in;
 }
@@ -73,6 +92,27 @@ export default {
 
 .author {
   text-align: center;
-  margin-top: 5px;
+  margin-top: 1rem;
 }
+
+
+@media (min-width: 576px) {  
+
+  .image-container {
+    width: calc(50% - 20px);
+}
+
+}
+@media (min-width: 992px) {
+  .image-container {
+    width: calc(33.3% - 20px);
+}
+}
+
+@media (min-width: 1200px) { 
+  .image-container {
+    width: calc(25% - 20px);
+}
+ }
+
 </style>
